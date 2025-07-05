@@ -107,9 +107,11 @@ export default function DashboardPage() {
                 Manage your company information and services
               </CardDescription>
             </div>
-            <Button variant="outline" size="sm">
-              <Edit className="h-4 w-4 mr-2" />
-              Edit Profile
+            <Button asChild variant="outline" size="sm">
+              <Link href="/dashboard/profile/edit">
+                <Edit className="h-4 w-4 mr-2" />
+                Edit Profile
+              </Link>
             </Button>
           </div>
         </CardHeader>

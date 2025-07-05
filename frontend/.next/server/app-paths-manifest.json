@@ -1,6 +1,7 @@
 {
-  "/auth/sign-in/page": "app/auth/sign-in/page.js",
-  "/auth/sign-up/page": "app/auth/sign-up/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/page": "app/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/dashboard/create-tender/page": "app/dashboard/create-tender/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/tenders/page": "app/dashboard/tenders/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js"
 }

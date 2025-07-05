@@ -16,24 +16,35 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Building2 } from "lucide-react";
+import axios from "axios";
 
 export default function SignInPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const res = await axios.post("http://localhost:3001/auth/login", data);
+      console.log(res);
+      if (res.status === 200) {
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Error occured while logging in");
+    } finally {
       setIsLoading(false);
-      router.push("/dashboard");
-    }, 1000);
+    }
   };
-
+  const handleChange = (e: any) => {
+    setData((data) => ({ ...data, [e.target.name]: e.target.value }));
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -59,8 +70,9 @@ export default function SignInPage() {
                 <Input
                   id="email"
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  name="email"
+                  value={data.email}
+                  onChange={handleChange}
                   required
                   placeholder="Enter your email"
                 />
@@ -71,8 +83,9 @@ export default function SignInPage() {
                 <Input
                   id="password"
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  name="password"
+                  value={data.password}
+                  onChange={handleChange}
                   required
                   placeholder="Enter your password"
                 />

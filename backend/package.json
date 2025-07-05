@@ -1,21 +1,13 @@
 {
-  "dependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
-    "@types/jsonwebtoken": "^9.0.10",
-    "bcryptjs": "^3.0.2",
-    "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "knex": "^3.1.0",
-    "pg": "^8.16.3"
-  },
-  "type": "module",
   "name": "backend",
+  "type": "commonjs",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "dev": "npm run build && nodemon dist/index.js",
+    "migrate": "ts-node ./node_modules/knex/bin/cli.js migrate:latest --knexfile knexfile.ts",
+    "migrate:make": "knex migrate:make"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +15,22 @@
   "description": "",
   "devDependencies": {
     "@types/node": "^24.0.10",
+    "@types/pg": "^8.15.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@types/bcryptjs": "^3.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.0.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "knex": "^3.1.0",
+    "nodemon": "^3.1.10",
+    "pg": "^8.16.3"
   }
 }

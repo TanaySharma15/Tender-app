@@ -4,7 +4,7 @@ import type React from "react";
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,32 +16,41 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Building2 } from "lucide-react";
+import axios from "axios";
 
 export default function SignUpPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [companyName, setCompanyName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+    companyName: "",
+  });
   const router = useRouter();
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
+    if (data.password !== confirmPassword) {
       alert("Passwords don't match");
       return;
     }
-
     setIsLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const res = await axios.post("http://localhost:3001/auth/signup", data);
+      if (res.status === 201) {
+        router.push("/auth/sign-in");
+      }
+      console.log(res);
+    } catch (error) {
+      console.error(error);
+      alert("Sign up failed. Please try again.");
+    } finally {
       setIsLoading(false);
-      router.push("/dashboard");
-    }, 1000);
+    }
   };
-
+  const changeHandler = async (e: any) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -69,8 +78,9 @@ export default function SignUpPage() {
                 <Input
                   id="companyName"
                   type="text"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
+                  name="companyName"
+                  value={data.companyName}
+                  onChange={changeHandler}
                   required
                   placeholder="Enter your company name"
                 />
@@ -81,8 +91,9 @@ export default function SignUpPage() {
                 <Input
                   id="email"
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  name="email"
+                  value={data.email}
+                  onChange={changeHandler}
                   required
                   placeholder="Enter your email"
                 />
@@ -93,8 +104,9 @@ export default function SignUpPage() {
                 <Input
                   id="password"
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  name="password"
+                  value={data.password}
+                  onChange={changeHandler}
                   required
                   placeholder="Create a password"
                 />
