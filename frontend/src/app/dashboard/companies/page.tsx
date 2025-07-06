@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/select";
 import { Search, Building2, MapPin, Users } from "lucide-react";
 import Link from "next/link";
+import { Company } from "@/types/company";
+import axios from "axios";
 
 // Mock data
 const companies = [
@@ -146,7 +148,22 @@ const industries = [
 
 export default function CompaniesPage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [companies, setCompanies] = useState<Company[]>([]);
   const [selectedIndustry, setSelectedIndustry] = useState("All Industries");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const getCompanies = async () => {
+      const res = await axios.get("http://localhost:3001/company", {
+        headers: {
+          Authorization: token,
+        },
+      });
+      console.log(res);
+      setCompanies(res.data.companies);
+    };
+    getCompanies();
+  }, []);
 
   const filteredCompanies = companies.filter((company) => {
     const matchesSearch =
@@ -172,7 +189,6 @@ export default function CompaniesPage() {
         </p>
       </div>
 
-      {/* Search and Filters */}
       <Card>
         <CardContent className="pt-6">
           <div className="flex flex-col md:flex-row gap-4">
@@ -253,18 +269,26 @@ export default function CompaniesPage() {
                 <div>
                   <h4 className="text-sm font-medium mb-2">Services</h4>
                   <div className="flex flex-wrap gap-1">
-                    {company.services.slice(0, 3).map((service) => (
-                      <Badge
-                        key={service}
-                        variant="secondary"
-                        className="text-xs"
-                      >
-                        {service}
-                      </Badge>
-                    ))}
-                    {company.services.length > 3 && (
-                      <Badge variant="outline" className="text-xs">
-                        +{company.services.length - 3} more
+                    {Array.isArray(company.services) ? (
+                      <>
+                        {company.services.slice(0, 3).map((service) => (
+                          <Badge
+                            key={service}
+                            variant="secondary"
+                            className="text-xs"
+                          >
+                            {service}
+                          </Badge>
+                        ))}
+                        {company.services.length > 3 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{company.services.length - 3} more
+                          </Badge>
+                        )}
+                      </>
+                    ) : (
+                      <Badge variant="secondary" className="text-xs">
+                        No services listed
                       </Badge>
                     )}
                   </div>
@@ -275,7 +299,6 @@ export default function CompaniesPage() {
                     <Users className="h-3 w-3" />
                     <span>{company.employees} employees</span>
                   </div>
-                  <span>{company.activeTenders} active tenders</span>
                 </div>
 
                 <Button asChild className="w-full" size="sm">

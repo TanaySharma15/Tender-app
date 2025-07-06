@@ -26,26 +26,8 @@ import {
 } from "@/components/ui/select";
 import { Building2, Upload, X, Plus, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-
-// Mock current company data
-const currentCompanyData = {
-  name: "TechCorp Solutions",
-  industry: "Technology",
-  description:
-    "Leading provider of enterprise software solutions and digital transformation services.",
-  logo: "/placeholder.svg?height=80&width=80",
-  services: [
-    "Software Development",
-    "Cloud Services",
-    "AI/ML Solutions",
-    "Cybersecurity",
-    "Data Analytics",
-  ],
-  website: "www.techcorp-solutions.com",
-  location: "San Francisco, CA",
-  employees: "500-1000",
-  founded: "2015",
-};
+import { Company } from "@/types/company";
+import axios from "axios";
 
 const industries = [
   "Technology",
@@ -74,34 +56,65 @@ const employeeSizes = [
 ];
 
 export default function EditProfilePage() {
-  const [formData, setFormData] = useState(currentCompanyData);
+  const [formData, setFormData] = useState<Company>({
+    id: "",
+    name: "",
+    website: "",
+    logo: "",
+    services: [],
+    industry: "",
+    location: "",
+    description: "",
+    employees: "",
+    founded: "",
+  });
+
   const [newService, setNewService] = useState("");
-  const [logoPreview, setLogoPreview] = useState(currentCompanyData.logo);
+  const [logoPreview, setLogoPreview] = useState<string | undefined>();
+  const [logoFile, setLogoFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleInputChange = (field: keyof Company, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // In a real app, you'd upload to a service like Vercel Blob or AWS S3
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        setLogoPreview(result);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file");
+      return;
     }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File size too large. Maximum 5MB allowed.");
+      return;
+    }
+
+    setLogoFile(file);
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setLogoPreview(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
   };
 
   const addService = () => {
-    if (newService.trim() && !formData.services.includes(newService.trim())) {
+    const trimmed = newService.trim();
+    if (trimmed && !formData.services?.includes(trimmed)) {
       setFormData((prev) => ({
         ...prev,
-        services: [...prev.services, newService.trim()],
+        services: [...(prev.services || []), trimmed],
       }));
       setNewService("");
     }
@@ -110,7 +123,9 @@ export default function EditProfilePage() {
   const removeService = (serviceToRemove: string) => {
     setFormData((prev) => ({
       ...prev,
-      services: prev.services.filter((service) => service !== serviceToRemove),
+      services: (prev.services || []).filter(
+        (service) => service !== serviceToRemove
+      ),
     }));
   };
 
@@ -118,12 +133,54 @@ export default function EditProfilePage() {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      alert("Profile updated successfully!");
+    const token = localStorage.getItem("token");
+
+    try {
+      // Create FormData for multipart/form-data
+      const formDataToSend = new FormData();
+
+      // Append all form fields
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("industry", formData.industry);
+      formDataToSend.append("location", formData.location);
+      formDataToSend.append("description", formData.description);
+      formDataToSend.append("services", JSON.stringify(formData.services));
+      formDataToSend.append("employees", formData.employees);
+      formDataToSend.append("founded", formData.founded);
+      formDataToSend.append("website", formData.website);
+
+      // Append image if selected
+      if (logoFile) {
+        formDataToSend.append("image", logoFile);
+      }
+
+      const res = await axios.post(
+        "http://localhost:3001/company/create",
+        formDataToSend,
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Company created successfully:", res.data);
+
+      // Redirect to dashboard or company profile
       router.push("/dashboard");
-    }, 1500);
+    } catch (err) {
+      console.error("Submission error:", err);
+
+      // Handle specific error messages
+      if (axios.isAxiosError(err) && err.response) {
+        alert(err.response.data.message || "Failed to create company");
+      } else {
+        alert("An error occurred while creating the company");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -137,9 +194,9 @@ export default function EditProfilePage() {
       </Button>
 
       <div>
-        <h1 className="text-3xl font-bold">Edit Company Profile</h1>
+        <h1 className="text-3xl font-bold">Create Company Profile</h1>
         <p className="text-muted-foreground">
-          Update your company information and services
+          Add your company information and services
         </p>
       </div>
 
@@ -195,9 +252,7 @@ export default function EditProfilePage() {
         <Card>
           <CardHeader>
             <CardTitle>Basic Information</CardTitle>
-            <CardDescription>
-              Update your company's basic details
-            </CardDescription>
+            <CardDescription>Add your company's basic details</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
@@ -216,7 +271,7 @@ export default function EditProfilePage() {
                   id="website"
                   value={formData.website}
                   onChange={(e) => handleInputChange("website", e.target.value)}
-                  placeholder="www.yourcompany.com"
+                  placeholder="https://www.yourcompany.com"
                 />
               </div>
             </div>
@@ -243,7 +298,7 @@ export default function EditProfilePage() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="employees">Company Size</Label>
+                <Label htmlFor="employees">Company Size *</Label>
                 <Select
                   value={formData.employees}
                   onValueChange={(value) =>
@@ -266,7 +321,7 @@ export default function EditProfilePage() {
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="location">Location</Label>
+                <Label htmlFor="location">Location *</Label>
                 <Input
                   id="location"
                   value={formData.location}
@@ -274,15 +329,17 @@ export default function EditProfilePage() {
                     handleInputChange("location", e.target.value)
                   }
                   placeholder="City, State/Country"
+                  required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="founded">Founded Year</Label>
+                <Label htmlFor="founded">Founded Year *</Label>
                 <Input
                   id="founded"
                   value={formData.founded}
                   onChange={(e) => handleInputChange("founded", e.target.value)}
                   placeholder="2015"
+                  required
                 />
               </div>
             </div>
@@ -306,7 +363,7 @@ export default function EditProfilePage() {
         {/* Services & Expertise */}
         <Card>
           <CardHeader>
-            <CardTitle>Services & Expertise</CardTitle>
+            <CardTitle>Services & Expertise *</CardTitle>
             <CardDescription>
               Add the services and areas of expertise your company offers
             </CardDescription>
@@ -343,8 +400,8 @@ export default function EditProfilePage() {
 
             {formData.services.length === 0 && (
               <p className="text-sm text-muted-foreground">
-                No services added yet. Add services to help other companies find
-                you.
+                No services added yet. Add at least one service to help other
+                companies find you.
               </p>
             )}
           </CardContent>
@@ -354,8 +411,12 @@ export default function EditProfilePage() {
         <Card>
           <CardContent className="pt-6">
             <div className="flex gap-4">
-              <Button type="submit" disabled={isLoading} className="flex-1">
-                {isLoading ? "Updating Profile..." : "Update Profile"}
+              <Button
+                type="submit"
+                disabled={isLoading || formData.services.length === 0}
+                className="flex-1"
+              >
+                {isLoading ? "Creating Company..." : "Create Company"}
               </Button>
               <Button
                 type="button"
@@ -363,7 +424,7 @@ export default function EditProfilePage() {
                 onClick={() => router.back()}
                 className="flex-1 bg-transparent"
               >
-                Cancel Changes
+                Cancel
               </Button>
             </div>
           </CardContent>

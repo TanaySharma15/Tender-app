@@ -5,6 +5,8 @@ declare module "express" {
     user?: {
       id: number;
       email: string;
+      company_name?: string;
     };
+    file?: Express.Multer.File;
   }
 }

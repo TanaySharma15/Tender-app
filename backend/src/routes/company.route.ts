@@ -1,8 +1,15 @@
-import express from "express";
-import { createCompany } from "../controllers/company.controller";
+// routes/company.ts
+import { Router } from "express";
+import {
+  uploadMiddleware,
+  createCompany,
+  handleMulterError,
+  getAllCompaniesExceptUserCompany,
+} from "../controllers/company.controller";
+import { authMiddleware } from "../middleware/auth.middleware";
 
-const router = express.Router();
+const router = Router();
 
-router.post("/", createCompany);
-
+router.post("/create", uploadMiddleware, handleMulterError, createCompany);
+router.get("/", authMiddleware, getAllCompaniesExceptUserCompany);
 export default router;
