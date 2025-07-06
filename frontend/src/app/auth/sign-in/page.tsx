@@ -32,6 +32,9 @@ export default function SignInPage() {
     try {
       const res = await axios.post("http://localhost:3001/auth/login", data);
       console.log(res);
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+      }
       if (res.status === 200) {
         router.push("/dashboard");
       }

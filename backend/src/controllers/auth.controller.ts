@@ -1,7 +1,8 @@
 import db from "../db";
-import bcrypt from "bcryptjs";
-
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
+import { JWT_EXPIRES_IN, JWT_SECRET } from "../config/jwt.config";
 
 export const registerUser = async (
   req: Request,
@@ -48,8 +49,12 @@ export const loginUser = async (
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(401).json({ message: "Invalid credentials" });
-
-    return res.status(200).json({ message: "Login successful", data: user });
+    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
+      expiresIn: JWT_EXPIRES_IN,
+    });
+    return res
+      .status(200)
+      .json({ message: "Login successful", data: user, token });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Login failed", detail: error });

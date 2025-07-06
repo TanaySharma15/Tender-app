@@ -14,14 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { CalendarIcon, DollarSign, Building2 } from "lucide-react";
-
-interface Tender {
-  id: number;
-  title: string;
-  company: string;
-  deadline: string;
-  budget: number;
-}
+import { Tender } from "@/types/tender";
 
 interface ApplyTenderModalProps {
   tender: Tender | null;
@@ -91,7 +84,7 @@ export function ApplyTenderModal({
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
               <Building2 className="h-3 w-3" />
-              <span>{tender.company}</span>
+              <span>{tender.creator_company}</span>
             </div>
             <div className="flex items-center gap-1">
               <DollarSign className="h-3 w-3 text-green-600" />

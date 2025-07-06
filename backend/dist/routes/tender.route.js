@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const tender_controllers_1 = require("../controllers/tender.controllers");
+const router = (0, express_1.Router)();
+router.post("/", auth_middleware_1.authMiddleware, tender_controllers_1.createTender);
+router.get("/my", auth_middleware_1.authMiddleware, tender_controllers_1.getMyTenders);
+router.get("/all", auth_middleware_1.authMiddleware, tender_controllers_1.browseTenders);
+router.get("/:tenderId", auth_middleware_1.authMiddleware, tender_controllers_1.getTenderById);
+exports.default = router;

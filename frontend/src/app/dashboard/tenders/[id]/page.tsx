@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import {
   Card,
@@ -22,86 +22,27 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { ApplyTenderModal } from "@/components/apply-tender-modal";
-
-// Mock data - in real app, fetch based on ID
-const tenderData = {
-  id: 1,
-  title: "E-commerce Website Development",
-  company: "RetailCorp Inc.",
-  companyLogo: "/placeholder.svg?height=60&width=60",
-  description: `We are seeking a skilled development team to build a comprehensive e-commerce platform that will serve as the foundation for our online retail operations. 
-
-The project involves creating a modern, scalable web application with the following key requirements:
-
-**Core Features:**
-- User authentication and account management
-- Product catalog with advanced search and filtering
-- Shopping cart and checkout process
-- Payment gateway integration (Stripe, PayPal)
-- Order management system
-- Inventory tracking and management
-- Admin dashboard for content management
-
-**Technical Requirements:**
-- Responsive design for mobile and desktop
-- SEO optimization
-- Fast loading times and performance optimization
-- Security best practices implementation
-- Integration with third-party APIs
-- Scalable architecture to handle growth
-
-**Preferred Technologies:**
-- Frontend: React.js or Next.js
-- Backend: Node.js or Python
-- Database: PostgreSQL or MongoDB
-- Cloud hosting: AWS or Google Cloud
-
-**Deliverables:**
-- Complete source code with documentation
-- Deployment on production environment
-- User training and handover documentation
-- 3 months of post-launch support`,
-  deadline: "2024-02-15",
-  budget: 75000,
-  posted: "2024-01-10",
-  status: "Active",
-  applications: [
-    {
-      id: 1,
-      company: "WebCraft Studios",
-      logo: "/placeholder.svg?height=40&width=40",
-      proposal:
-        "We have extensive experience in e-commerce development with over 50 successful projects. Our team specializes in React/Node.js stack and can deliver a scalable solution within your timeline. We propose using Next.js for SEO benefits and implementing a microservices architecture for scalability.",
-      appliedDate: "2024-01-12",
-      experience: "5+ years",
-    },
-    {
-      id: 2,
-      company: "Digital Solutions Pro",
-      logo: "/placeholder.svg?height=40&width=40",
-      proposal:
-        "Our team brings 8 years of e-commerce expertise with proven track record in payment integrations and inventory management systems. We suggest using a headless commerce approach with Shopify Plus backend and custom React frontend for maximum flexibility.",
-      appliedDate: "2024-01-13",
-      experience: "8+ years",
-    },
-    {
-      id: 3,
-      company: "TechForge Development",
-      logo: "/placeholder.svg?height=40&width=40",
-      proposal:
-        "We specialize in high-performance e-commerce platforms using modern technologies. Our approach includes implementing advanced caching strategies, CDN integration, and progressive web app features to ensure optimal user experience and conversion rates.",
-      appliedDate: "2024-01-14",
-      experience: "6+ years",
-    },
-  ],
-};
+import axios from "axios";
+import { Tender } from "@/types/tender";
 
 export default function TenderDetailPage() {
   const params = useParams();
-  const [selectedTender, setSelectedTender] = useState<
-    typeof tenderData | null
-  >(null);
-
+  const tenderId = params.id;
+  const [selectedTender, setSelectedTender] = useState<Tender | null>(null);
+  const [tenderData, setTenderData] = useState<Tender>();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const getTenderDetails = async () => {
+      const res = await axios.get(`http://localhost:3001/tender/${tenderId}`, {
+        headers: {
+          Authorization: token,
+        },
+      });
+      console.log(res);
+      setTenderData(res.data);
+    };
+    getTenderDetails();
+  }, []);
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -127,7 +68,8 @@ export default function TenderDetailPage() {
     return diffDays;
   };
 
-  const daysLeft = getDaysUntilDeadline(tenderData.deadline);
+  const daysLeft = tenderData ? getDaysUntilDeadline(tenderData.deadline) : 0;
+  if (!tenderData) return <div>Loading...</div>;
 
   return (
     <div className="space-y-6">
@@ -146,11 +88,11 @@ export default function TenderDetailPage() {
             <div className="flex items-start gap-4">
               <Avatar className="h-16 w-16">
                 <AvatarImage
-                  src={tenderData.companyLogo || "/placeholder.svg"}
-                  alt={tenderData.company}
+                  src={"globe.svg"}
+                  // alt={tenderData.company}
                 />
                 <AvatarFallback>
-                  {tenderData.company
+                  {tenderData.creator_company
                     .split(" ")
                     .map((n) => n[0])
                     .join("")}
@@ -162,7 +104,9 @@ export default function TenderDetailPage() {
                 </CardTitle>
                 <div className="flex items-center gap-2 text-muted-foreground mb-2">
                   <Building2 className="h-4 w-4" />
-                  <span className="font-medium">{tenderData.company}</span>
+                  <span className="font-medium">
+                    {tenderData.creator_company}
+                  </span>
                   <span>•</span>
                   <span>Posted {formatDate(tenderData.posted)}</span>
                 </div>
@@ -176,10 +120,6 @@ export default function TenderDetailPage() {
                   <div className="flex items-center gap-1">
                     <CalendarIcon className="h-4 w-4 text-blue-600" />
                     <span>Due {formatDate(tenderData.deadline)}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Users className="h-4 w-4 text-purple-600" />
-                    <span>{tenderData.applications.length} applications</span>
                   </div>
                 </div>
               </div>
@@ -230,55 +170,6 @@ export default function TenderDetailPage() {
                   <p className="text-muted-foreground leading-relaxed">
                     {paragraph}
                   </p>
-                )}
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Applications */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Applications ({tenderData.applications.length})</CardTitle>
-          <CardDescription>
-            Companies that have applied for this tender
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            {tenderData.applications.map((application, index) => (
-              <div key={application.id}>
-                <div className="flex items-start gap-4">
-                  <Avatar className="h-12 w-12">
-                    <AvatarImage
-                      src={application.logo || "/placeholder.svg"}
-                      alt={application.company}
-                    />
-                    <AvatarFallback>
-                      {application.company
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold">{application.company}</h4>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span>{application.experience} experience</span>
-                        <span>
-                          Applied {formatDate(application.appliedDate)}
-                        </span>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {application.proposal}
-                    </p>
-                  </div>
-                </div>
-                {index < tenderData.applications.length - 1 && (
-                  <Separator className="mt-6" />
                 )}
               </div>
             ))}

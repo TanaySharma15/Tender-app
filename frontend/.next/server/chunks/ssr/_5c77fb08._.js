@@ -180,25 +180,31 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 ;
 ;
 function CreateTenderPage() {
-    const [title, setTitle] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
-    const [description, setDescription] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
-    const [deadline, setDeadline] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
-    const [budget, setBudget] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
+    // const [title, setTitle] = useState("");
+    // const [description, setDescription] = useState("");
+    // const [deadline, setDeadline] = useState("");
+    // const [budget, setBudget] = useState("");
+    const [data, setData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({
+        title: "",
+        description: "",
+        deadline: "",
+        budget: ""
+    });
     const [isLoading, setIsLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
     const handleSubmit = async (e)=>{
         e.preventDefault();
-        if (!title || !description || !deadline || !budget) {
+        if (!data.title || !data.description || !data.deadline || !data.budget) {
             alert("Please fill in all fields");
             return;
         }
         setIsLoading(true);
-        // Simulate API call
-        setTimeout(()=>{
-            setIsLoading(false);
-            alert("Tender created successfully!");
-            router.push("/dashboard/my-tenders");
-        }, 1000);
+    };
+    const changeHandler = async (e)=>{
+        setData((prev)=>({
+                ...prev,
+                [e.target.name]: e.target.value
+            }));
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "max-w-2xl mx-auto space-y-6",
@@ -210,7 +216,7 @@ function CreateTenderPage() {
                         children: "Create New Tender"
                     }, void 0, false, {
                         fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                        lineNumber: 49,
+                        lineNumber: 50,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -218,13 +224,13 @@ function CreateTenderPage() {
                         children: "Post a new tender opportunity for other companies to apply"
                     }, void 0, false, {
                         fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                        lineNumber: 50,
+                        lineNumber: 51,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                lineNumber: 48,
+                lineNumber: 49,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -238,27 +244,27 @@ function CreateTenderPage() {
                                         className: "h-5 w-5"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                        lineNumber: 58,
+                                        lineNumber: 59,
                                         columnNumber: 13
                                     }, this),
                                     "Tender Details"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                lineNumber: 57,
+                                lineNumber: 58,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardDescription"], {
                                 children: "Provide comprehensive information about your tender requirements"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                lineNumber: 61,
+                                lineNumber: 62,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                        lineNumber: 56,
+                        lineNumber: 57,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -274,24 +280,25 @@ function CreateTenderPage() {
                                             children: "Tender Title *"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                            lineNumber: 68,
+                                            lineNumber: 69,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
                                             id: "title",
-                                            value: title,
-                                            onChange: (e)=>setTitle(e.target.value),
+                                            value: data.title,
+                                            name: "title",
+                                            onChange: changeHandler,
                                             placeholder: "e.g., Mobile App Development for E-commerce Platform",
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                            lineNumber: 69,
+                                            lineNumber: 70,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                    lineNumber: 67,
+                                    lineNumber: 68,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -302,25 +309,25 @@ function CreateTenderPage() {
                                             children: "Description *"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                            lineNumber: 79,
+                                            lineNumber: 81,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$textarea$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Textarea"], {
                                             id: "description",
-                                            value: description,
-                                            onChange: (e)=>setDescription(e.target.value),
+                                            value: data.description,
+                                            onChange: changeHandler,
                                             placeholder: "Provide detailed requirements, scope of work, deliverables, and any specific criteria...",
                                             rows: 6,
                                             required: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                            lineNumber: 80,
+                                            lineNumber: 82,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                    lineNumber: 78,
+                                    lineNumber: 80,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -337,32 +344,32 @@ function CreateTenderPage() {
                                                             className: "h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                                            lineNumber: 93,
+                                                            lineNumber: 95,
                                                             columnNumber: 19
                                                         }, this),
                                                         "Application Deadline *"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                                    lineNumber: 92,
+                                                    lineNumber: 94,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
                                                     id: "deadline",
                                                     type: "date",
-                                                    value: deadline,
-                                                    onChange: (e)=>setDeadline(e.target.value),
+                                                    value: data.deadline,
+                                                    onChange: changeHandler,
                                                     min: new Date().toISOString().split("T")[0],
                                                     required: true
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                                    lineNumber: 96,
+                                                    lineNumber: 98,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                            lineNumber: 91,
+                                            lineNumber: 93,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -376,40 +383,40 @@ function CreateTenderPage() {
                                                             className: "h-4 w-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                                            lineNumber: 108,
+                                                            lineNumber: 110,
                                                             columnNumber: 19
                                                         }, this),
                                                         "Budget (USD) *"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                                    lineNumber: 107,
+                                                    lineNumber: 109,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
                                                     id: "budget",
                                                     type: "number",
-                                                    value: budget,
-                                                    onChange: (e)=>setBudget(e.target.value),
+                                                    value: data.budget,
+                                                    onChange: changeHandler,
                                                     placeholder: "50000",
                                                     min: "0",
                                                     step: "1000",
                                                     required: true
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                                    lineNumber: 111,
+                                                    lineNumber: 113,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                            lineNumber: 106,
+                                            lineNumber: 108,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                    lineNumber: 90,
+                                    lineNumber: 92,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -422,7 +429,7 @@ function CreateTenderPage() {
                                             children: isLoading ? "Creating Tender..." : "Create Tender"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                            lineNumber: 125,
+                                            lineNumber: 127,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -433,30 +440,30 @@ function CreateTenderPage() {
                                             children: "Cancel"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                            lineNumber: 128,
+                                            lineNumber: 130,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                    lineNumber: 124,
+                                    lineNumber: 126,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                            lineNumber: 66,
+                            lineNumber: 67,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                        lineNumber: 65,
+                        lineNumber: 66,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                lineNumber: 55,
+                lineNumber: 56,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -466,12 +473,12 @@ function CreateTenderPage() {
                             children: "Tips for Creating Effective Tenders"
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                            lineNumber: 143,
+                            lineNumber: 145,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                        lineNumber: 142,
+                        lineNumber: 144,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -482,58 +489,58 @@ function CreateTenderPage() {
                                     children: "• Be specific about your requirements and expectations"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                    lineNumber: 147,
+                                    lineNumber: 149,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                     children: "• Include clear deliverables and timeline expectations"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                    lineNumber: 148,
+                                    lineNumber: 150,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                     children: "• Set a realistic budget range for your project"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                    lineNumber: 149,
+                                    lineNumber: 151,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                     children: "• Mention any preferred technologies or methodologies"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                    lineNumber: 150,
+                                    lineNumber: 152,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                     children: "• Specify evaluation criteria for proposals"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                                    lineNumber: 151,
+                                    lineNumber: 153,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                            lineNumber: 146,
+                            lineNumber: 148,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                        lineNumber: 145,
+                        lineNumber: 147,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-                lineNumber: 141,
+                lineNumber: 143,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/dashboard/create-tender/page.tsx",
-        lineNumber: 47,
+        lineNumber: 48,
         columnNumber: 5
     }, this);
 }

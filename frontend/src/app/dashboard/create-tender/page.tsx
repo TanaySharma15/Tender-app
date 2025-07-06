@@ -16,33 +16,48 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { CalendarIcon, DollarSign, FileText } from "lucide-react";
+import axios from "axios";
 
 export default function CreateTenderPage() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [deadline, setDeadline] = useState("");
-  const [budget, setBudget] = useState("");
+  const [data, setData] = useState({
+    title: "",
+    description: "",
+    deadline: "",
+    budget: "",
+  });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!title || !description || !deadline || !budget) {
+    if (!data.title || !data.description || !data.deadline || !data.budget) {
       alert("Please fill in all fields");
       return;
     }
 
     setIsLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.post("http://localhost:3001/tender", data, {
+        headers: {
+          Authorization: token,
+        },
+      });
+      console.log(res);
+      if (res.status === 201) {
+        alert("Tender created successfully");
+        router.push("http://localhost:3000/dashboard");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
       setIsLoading(false);
-      alert("Tender created successfully!");
-      router.push("/dashboard/my-tenders");
-    }, 1000);
+    }
   };
-
+  const changeHandler = async (e: any) => {
+    setData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
@@ -68,8 +83,9 @@ export default function CreateTenderPage() {
               <Label htmlFor="title">Tender Title *</Label>
               <Input
                 id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={data.title}
+                name="title"
+                onChange={changeHandler}
                 placeholder="e.g., Mobile App Development for E-commerce Platform"
                 required
               />
@@ -79,8 +95,9 @@ export default function CreateTenderPage() {
               <Label htmlFor="description">Description *</Label>
               <Textarea
                 id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={data.description}
+                name="description"
+                onChange={changeHandler}
                 placeholder="Provide detailed requirements, scope of work, deliverables, and any specific criteria..."
                 rows={6}
                 required
@@ -96,8 +113,9 @@ export default function CreateTenderPage() {
                 <Input
                   id="deadline"
                   type="date"
-                  value={deadline}
-                  onChange={(e) => setDeadline(e.target.value)}
+                  name="deadline"
+                  value={data.deadline}
+                  onChange={changeHandler}
                   min={new Date().toISOString().split("T")[0]}
                   required
                 />
@@ -111,8 +129,9 @@ export default function CreateTenderPage() {
                 <Input
                   id="budget"
                   type="number"
-                  value={budget}
-                  onChange={(e) => setBudget(e.target.value)}
+                  name="budget"
+                  value={data.budget}
+                  onChange={changeHandler}
                   placeholder="50000"
                   min="0"
                   step="1000"

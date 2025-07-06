@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -14,78 +14,26 @@ import { Input } from "@/components/ui/input";
 import { CalendarIcon, DollarSign, Search, Building2 } from "lucide-react";
 import Link from "next/link";
 import { ApplyTenderModal } from "@/components/apply-tender-modal";
+import axios from "axios";
+import { Tender } from "@/types/tender";
 
 // Mock data
-const tenders = [
-  {
-    id: 1,
-    title: "E-commerce Website Development",
-    company: "RetailCorp Inc.",
-    description:
-      "Looking for a full-stack development team to build a modern e-commerce platform with payment integration, inventory management, and mobile responsiveness.",
-    deadline: "2024-02-15",
-    budget: 75000,
-    applicants: 12,
-    posted: "2024-01-10",
-  },
-  {
-    id: 2,
-    title: "Cloud Infrastructure Migration",
-    company: "DataTech Solutions",
-    description:
-      "Need experienced cloud architects to migrate our on-premise infrastructure to AWS. Must have expertise in containerization and microservices.",
-    deadline: "2024-02-20",
-    budget: 120000,
-    applicants: 8,
-    posted: "2024-01-12",
-  },
-  {
-    id: 3,
-    title: "Mobile App UI/UX Design",
-    company: "StartupXYZ",
-    description:
-      "Seeking creative designers to create intuitive mobile app interfaces for our fintech application. Experience with financial apps preferred.",
-    deadline: "2024-02-10",
-    budget: 25000,
-    applicants: 15,
-    posted: "2024-01-08",
-  },
-  {
-    id: 4,
-    title: "AI Chatbot Development",
-    company: "CustomerFirst Ltd",
-    description:
-      "Develop an intelligent chatbot for customer service automation. Must integrate with existing CRM and support multiple languages.",
-    deadline: "2024-02-25",
-    budget: 45000,
-    applicants: 6,
-    posted: "2024-01-15",
-  },
-  {
-    id: 5,
-    title: "Cybersecurity Audit & Implementation",
-    company: "SecureBank Corp",
-    description:
-      "Comprehensive security audit and implementation of security measures for our banking systems. Compliance with financial regulations required.",
-    deadline: "2024-03-01",
-    budget: 200000,
-    applicants: 4,
-    posted: "2024-01-18",
-  },
-  {
-    id: 6,
-    title: "Data Analytics Dashboard",
-    company: "Analytics Pro",
-    description:
-      "Build interactive dashboards for business intelligence. Experience with D3.js, React, and real-time data visualization required.",
-    deadline: "2024-02-18",
-    budget: 35000,
-    applicants: 9,
-    posted: "2024-01-14",
-  },
-];
 
 export default function TendersPage() {
+  const [tenders, setTenders] = useState<Tender[]>([]);
+  useEffect(() => {
+    const getAllTenders = async () => {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("http://localhost:3001/tender/all", {
+        headers: {
+          Authorization: token,
+        },
+      });
+      console.log(res);
+      setTenders(res.data.tenders);
+    };
+    getAllTenders();
+  }, []);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTender, setSelectedTender] = useState<
     (typeof tenders)[0] | null
@@ -96,7 +44,7 @@ export default function TendersPage() {
   const filteredTenders = tenders.filter(
     (tender) =>
       tender.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tender.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      tender.company.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       tender.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -202,7 +150,7 @@ export default function TendersPage() {
                     </CardTitle>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                       <Building2 className="h-4 w-4" />
-                      <span>{tender.company}</span>
+                      <span>{tender.company.name}</span>
                       <span>•</span>
                       <span>Posted {formatDate(tender.posted)}</span>
                     </div>
@@ -219,9 +167,6 @@ export default function TendersPage() {
                     >
                       {daysLeft > 0 ? `${daysLeft} days left` : "Expired"}
                     </Badge>
-                    <div className="text-sm text-muted-foreground">
-                      {tender.applicants} applicants
-                    </div>
                   </div>
                 </div>
               </CardHeader>
@@ -279,11 +224,11 @@ export default function TendersPage() {
       )}
 
       {/* Apply Modal */}
-      <ApplyTenderModal
+      {/* <ApplyTenderModal
         tender={selectedTender}
         isOpen={!!selectedTender}
         onClose={() => setSelectedTender(null)}
-      />
+      /> */}
     </div>
   );
 }

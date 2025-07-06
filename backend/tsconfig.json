@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    // ... your existing config
     "rootDir": "./src",
     "outDir": "./dist",
     "module": "commonjs",

@@ -14,10 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUser = exports.registerUser = void 0;
 const db_1 = __importDefault(require("../db"));
-const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const jwt_config_1 = require("../config/jwt.config");
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, companyName } = req.body;
-    console.log("REq.body-> ", req.body);
     try {
         if (!email || !password || !companyName) {
             return res.status(400).json({ error: "Missing fields", body: req.body });
@@ -25,7 +26,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const existingUser = yield (0, db_1.default)("users").where({ email }).first();
         if (existingUser)
             return res.status(400).json({ message: "User already exists" });
-        const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
+        const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         const user = yield (0, db_1.default)("users")
             .insert({
             email,
@@ -51,10 +52,15 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!user) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
-        const isMatch = yield bcryptjs_1.default.compare(password, user.password);
+        const isMatch = yield bcrypt_1.default.compare(password, user.password);
         if (!isMatch)
             return res.status(401).json({ message: "Invalid credentials" });
-        return res.status(200).json({ message: "Login successful", data: user });
+        const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email }, jwt_config_1.JWT_SECRET, {
+            expiresIn: jwt_config_1.JWT_EXPIRES_IN,
+        });
+        return res
+            .status(200)
+            .json({ message: "Login successful", data: user, token });
     }
     catch (error) {
         console.log(error);

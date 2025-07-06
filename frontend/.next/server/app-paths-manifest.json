@@ -1,7 +1,12 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
+  "/auth/sign-in/page": "app/auth/sign-in/page.js",
   "/dashboard/create-tender/page": "app/dashboard/create-tender/page.js",
+  "/dashboard/my-tenders/page": "app/dashboard/my-tenders/page.js",
   "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/profile/edit/page": "app/dashboard/profile/edit/page.js",
+  "/dashboard/tenders/[id]/page": "app/dashboard/tenders/[id]/page.js",
   "/dashboard/tenders/page": "app/dashboard/tenders/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js"
 }

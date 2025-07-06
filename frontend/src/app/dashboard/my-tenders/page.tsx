@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -26,57 +26,27 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
-
-// Mock data
-const myTenders = [
-  {
-    id: 1,
-    title: "Mobile App Development for Logistics",
-    description:
-      "Need a cross-platform mobile application for tracking shipments and managing logistics operations.",
-    deadline: "2024-02-20",
-    budget: 85000,
-    status: "Active",
-    applications: 15,
-    posted: "2024-01-08",
-  },
-  {
-    id: 2,
-    title: "Website Redesign and SEO Optimization",
-    description:
-      "Complete redesign of corporate website with modern UI/UX and comprehensive SEO optimization.",
-    deadline: "2024-02-10",
-    budget: 35000,
-    status: "Active",
-    applications: 22,
-    posted: "2024-01-05",
-  },
-  {
-    id: 3,
-    title: "Cloud Migration Services",
-    description:
-      "Migrate existing on-premise infrastructure to AWS cloud with minimal downtime.",
-    deadline: "2024-01-25",
-    budget: 120000,
-    status: "Closed",
-    applications: 8,
-    posted: "2023-12-20",
-  },
-  {
-    id: 4,
-    title: "Data Analytics Dashboard Development",
-    description:
-      "Build interactive dashboards for business intelligence and data visualization.",
-    deadline: "2024-03-01",
-    budget: 45000,
-    status: "Draft",
-    applications: 0,
-    posted: "2024-01-15",
-  },
-];
+import axios from "axios";
+import { Tender } from "@/types/tender";
 
 export default function MyTendersPage() {
-  const [tenders, setTenders] = useState(myTenders);
+  const [tenders, setTenders] = useState<Tender[]>([]);
+
+  const [activeTenders, setActiveTenders] = useState(0);
+  useEffect(() => {
+    const getMyTenders = async () => {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("http://localhost:3001/tender/my", {
+        headers: {
+          Authorization: token,
+        },
+      });
+      console.log(res);
+      setActiveTenders(res.data.activeTendersCount);
+      setTenders(res.data.tenders);
+    };
+    getMyTenders();
+  }, []);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -121,14 +91,11 @@ export default function MyTendersPage() {
     return <Badge variant="default">Active</Badge>;
   };
 
-  const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this tender?")) {
-      setTenders(tenders.filter((tender) => tender.id !== id));
-    }
-  };
-
-  const activeTenders = tenders.filter((t) => t.status === "Active").length;
-  const totalApplications = tenders.reduce((sum, t) => sum + t.applications, 0);
+  // const handleDelete = (id: number) => {
+  //   if (confirm("Are you sure you want to delete this tender?")) {
+  //     setTenders(tenders.filter((tender) => tender.id !== id));
+  //   }
+  // };
 
   return (
     <div className="space-y-6">
@@ -164,16 +131,6 @@ export default function MyTendersPage() {
             <div className="text-2xl font-bold">{activeTenders}</div>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Applications
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalApplications}</div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Tenders List */}
@@ -199,11 +156,7 @@ export default function MyTendersPage() {
                       <CalendarIcon className="h-4 w-4 text-blue-600" />
                       <span>Due {formatDate(tender.deadline)}</span>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Users className="h-4 w-4 text-purple-600" />
-                      <span>{tender.applications} applications</span>
-                    </div>
-                    <span>Posted {formatDate(tender.posted)}</span>
+                    <span>Posted {formatDate(tender.updated_at)}</span>
                   </div>
                 </div>
                 <DropdownMenu>
@@ -225,7 +178,7 @@ export default function MyTendersPage() {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="text-destructive"
-                      onClick={() => handleDelete(tender.id)}
+                      // onClick={() => handleDelete(tender.id)}
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
                       Delete
